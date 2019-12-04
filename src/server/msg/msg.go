@@ -11,9 +11,28 @@ var (
 )
 
 func init() {
-	Processor.Register(&Hello{})
+	Processor.Register(&LoginMsg{})
+	Processor.Register(&GameMsg{})
 }
 
-type Hello struct {
-	Name string
+type LoginMsg struct {
+	Cmd 		string	`json:"cmd"`
+	Account		string	`json:"account"`
+	Password	string	`json:"password"`
+}
+
+type LoginAns struct {
+	UserCheck string	`json:"usercheck"`
+}
+
+type PlayerMsg struct {
+	Code		int			`json:"code"`
+	ErrorMsg	string		`json:"errormsg"`
+	Cmd			string		`json:"cmd"`
+	Ans			interface{}	`json:"data"`
+}
+
+type GameMsg struct {
+	Cmd string 		`json:"cmd"`
+	Req interface{}	`json:"req"`
 }

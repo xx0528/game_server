@@ -4,6 +4,7 @@ import (
 	"github.com/name5566/leaf"
 	lconf "github.com/name5566/leaf/conf"
 	"server/conf"
+	"server/hall"
 	"server/game"
 	"server/gate"
 	"server/login"
@@ -17,6 +18,7 @@ func main() {
 	lconf.ProfilePath = conf.Server.ProfilePath
 
 	leaf.Run(
+		hall.Module,
 		game.Module,
 		gate.Module,
 		login.Module,

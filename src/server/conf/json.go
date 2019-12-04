@@ -1,8 +1,8 @@
 package conf
 
 import (
-	"encoding/json"
 	"github.com/name5566/leaf/log"
+	"encoding/json"
 	"io/ioutil"
 )
 
@@ -15,6 +15,9 @@ var Server struct {
 	TCPAddr     string
 	MaxConnNum  int
 	ConsolePort int
+	MgodbAddr 	string
+	GameMgoConnNum  int
+	LoginMgoConnNum  int
 	ProfilePath string
 }
 
