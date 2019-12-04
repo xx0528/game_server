@@ -8,7 +8,7 @@ import (
 	"github/com/name5566/leaf/log"
 	"github/com/name5566/leaf/module"
 
-	"game_server/base"
+	"server/base"
 )
 
 type Mongodb struct {
