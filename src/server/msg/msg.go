@@ -7,9 +7,8 @@ import (
 
 var (
 	Processor = json.NewProcessor()
-	//Processor = json.NewProcessor()
+	//Processor = protobuf.NewProcessor()
 )
-// var Processor network.Processor
 
 func init() {
 	Processor.Register(&Hello{})
