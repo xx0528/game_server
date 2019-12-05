@@ -41,7 +41,7 @@ func rpcOnLogin(args []interface{}) {
 		PlayerManager.AddPlayer(player)
 
 		player.SendMsg(0, "login", &msg.LoginAns{info.ObjID})
-	}
+	}})
 }
 
 func rpcNewAgent(args []interface{}) {
