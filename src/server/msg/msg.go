@@ -13,6 +13,7 @@ var (
 func init() {
 	Processor.Register(&LoginMsg{})
 	Processor.Register(&GameMsg{})
+	Processor.Register(&PlayerMsg{})
 }
 
 type LoginMsg struct {
