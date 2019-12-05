@@ -3,6 +3,9 @@ package internal
 import (
 	"github.com/name5566/leaf/gate"
 	"github.com/name5566/leaf/log"
+
+	"server/base"
+	"server/msg"
 )
 
 func init() {
@@ -12,7 +15,7 @@ func init() {
 }
 
 func rpcOnLogin(args []interface{}) {
-	a := args[0].(game.Agent)
+	a := args[0].(gate.Agent)
 	log.Debug("close agent")
 
 	userdata := a.UserData()
@@ -21,7 +24,7 @@ func rpcOnLogin(args []interface{}) {
 	}
 
 	info := userdata.(*base.AccountInfo)
-	player := PlayerManager.Get(info.ObjID)
+	player := PlayerMgr.Get(info.ObjID)
 	if nil != player {
 		player.agent.Close()
 		player.agent = a
@@ -38,7 +41,7 @@ func rpcOnLogin(args []interface{}) {
 		}
 
 		player.OnLogin()
-		PlayerManager.AddPlayer(player)
+		PlayerMgr.AddPlayer(player)
 
 		player.SendMsg(0, "login", &msg.LoginAns{info.ObjID})
 	}})
@@ -46,7 +49,7 @@ func rpcOnLogin(args []interface{}) {
 
 func rpcNewAgent(args []interface{}) {
 	a := args[0].(gate.Agent)
-	log.Debug("hall new agent")
+	log.Debug("hall new agent", a)
 }
 
 func rpcCloseAgent(args []interface{}) {
@@ -58,10 +61,10 @@ func rpcCloseAgent(args []interface{}) {
 	}
 
 	info := userdata.(*base.AccountInfo)
-	player := PlayerManager.Get(info.ObjID)
+	player := PlayerMgr.Get(info.ObjID)
 	if nil != player {
 		player.OnLogout()
 	}
 
-	PlayerManager.DelPlayer(info.ObjID)
+	PlayerMgr.DelPlayer(info.ObjID)
 }

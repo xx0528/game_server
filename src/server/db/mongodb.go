@@ -4,9 +4,9 @@ import (
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 	"github.com/name5566/leaf/go"
-	"github/com/name5566/leaf/db/mongodb"
-	"github/com/name5566/leaf/log"
-	"github/com/name5566/leaf/module"
+	"github.com/name5566/leaf/db/mongodb"
+	"github.com/name5566/leaf/log"
+	"github.com/name5566/leaf/module"
 
 	"server/base"
 )

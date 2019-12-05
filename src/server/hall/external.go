@@ -1,4 +1,4 @@
-package game
+package hall
 
 import (
 	"server/hall/internal"

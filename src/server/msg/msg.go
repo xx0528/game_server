@@ -21,6 +21,13 @@ type LoginMsg struct {
 	Password	string	`json:"password"`
 }
 
+type LoginRet struct {
+	Code		int			`json:"code"`
+	ErrorMsg	string		`json:"errormsg"`
+	Cmd 		string		`json:"cmd"`
+	Data 		interface{}	`json:"data"`
+}
+
 type LoginAns struct {
 	UserCheck string	`json:"usercheck"`
 }

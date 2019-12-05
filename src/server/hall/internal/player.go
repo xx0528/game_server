@@ -89,7 +89,7 @@ func (p *Player) OnLogin() {
 func (p *Player) OnLogout() {
 	p.Save()
 
-	TimerManager.RmvAllTimer(p)
+	TimerMgr.RmvAllTimer(p)
 }
 
 //保存玩家数据

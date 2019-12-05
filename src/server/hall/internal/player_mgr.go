@@ -15,7 +15,7 @@ func (mgr *playerMgr) Init() {
 }
 
 func (mgr *playerMgr) Get(id string) *Player {
-	mgr.PlayerMap[player.objid] = player
+	return mgr.PlayerMap[id]
 }
 
 func (mgr *playerMgr) AddPlayer(player *Player) {

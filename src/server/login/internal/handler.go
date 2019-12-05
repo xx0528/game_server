@@ -3,12 +3,12 @@ package internal
 import (
 	"reflect"
 	"server/base"
-	"server/game"
 	"server/msg"
 	"server/hall"
 
 	"github.com/name5566/leaf/gate"
 	"github.com/name5566/leaf/log"
+	"gopkg.in/mgo.v2/bson"
 )
 
 func handleMsg(m interface{}, h interface{}) {
@@ -24,28 +24,28 @@ func onLogin(args []interface{}) {
 	a := args[1].(gate.Agent)
 
 	log.Debug("on recv login msg %v", m)
-	mgodb.Get(base.DBTask{req.Account, base.DBNAME, base.ACCOUNTSET, "account", m.Account, &base.AccountInfo{}, func(param interface{}, err error) {
+	mgodb.Get(base.DBTask{m.Account, base.DBNAME, base.ACCOUNTSET, "account", m.Account, &base.AccountInfo{}, func(param interface{}, err error) {
 		info := param.(*base.AccountInfo)
 		if "" == info.Account {
-			info.Account = req.Account
-			info.Password = req.Password
+			info.Account = m.Account
+			info.Password = m.Password
 			info.ObjID = bson.NewObjectId().Hex()
-			mgodb.Set(base.DBTask{info.Account, base.DBNAME, base.ACCOUNTSET, "account", req.Account, info, nil})
+			mgodb.Set(base.DBTask{info.Account, base.DBNAME, base.ACCOUNTSET, "account", m.Account, info, nil})
 		}
 
-		if info.Password != req.Password {
-			a.WriteMsg(&msg.RetMsg{1, "", "login", nil})
+		if info.Password != m.Password {
+			a.WriteMsg(&msg.LoginRet{1, "", "login", nil})
 			return
 		}
 
-		agent.SetUserData(info)
-		skeleton.AsynCall(game.ChanRPC, "OnLogin", agent, func(err error) {
+		a.SetUserData(info)
+		skeleton.AsynCall(hall.ChanRPC, "OnLogin", a, func(err error) {
 			if nil != err {
 				log.Error("login failed: ", info.ObjID, " ", err.Error())
-				a.WriteMsg(&msg.RetMsg{-1, "", "login", nil})
+				a.WriteMsg(&msg.LoginRet{-1, "", "login", nil})
 				return
 			}
 		})
 	}})
-	return 0
+	return
 }
