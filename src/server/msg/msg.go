@@ -11,9 +11,14 @@ var (
 )
 
 func init() {
+	Processor.Register(&HeartBeat{})
 	Processor.Register(&LoginMsg{})
 	Processor.Register(&GameMsg{})
 	Processor.Register(&PlayerMsg{})
+}
+
+type HeartBeat struct {
+	PID		int		`json:"pid"`
 }
 
 type LoginMsg struct {

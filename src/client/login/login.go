@@ -23,7 +23,7 @@ func (lg *Login)OnLogin() {
 	if err != nil {
 		log.Fatal("dial:", err)
 	}
-	defer lg.Conn.Close()
+	// defer lg.Conn.Close()
 
 	data := []byte(`{
 		"LoginMsg": {

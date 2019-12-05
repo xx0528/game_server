@@ -16,7 +16,14 @@ func handleMsg(m interface{}, h interface{}) {
 }
 
 func init() {
+	handleMsg(&msg.HeartBeat{}, onHeartBeat)
 	handleMsg(&msg.LoginMsg{}, onLogin)
+}
+
+func onHeartBeat(args []interface{}) {
+	a := args[1].(gate.Agent)
+	log.Debug("on recv heart beat ")
+	a.WriteMsg(&msg.HeartBeat{1})
 }
 
 func onLogin(args []interface{}) {
