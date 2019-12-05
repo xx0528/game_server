@@ -8,6 +8,7 @@ import (
 	"server/game"
 	"server/gate"
 	"server/login"
+	"server/ddz"
 )
 
 func main() {
@@ -22,5 +23,6 @@ func main() {
 		game.Module,
 		gate.Module,
 		login.Module,
+		ddz.Module,
 	)
 }

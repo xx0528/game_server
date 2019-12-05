@@ -1,4 +1,4 @@
-package main
+package msg
 
 import (
 	"encoding/binary"
@@ -10,13 +10,12 @@ import (
 	"github.com/gorilla/websocket"
 )
 
-func main(){
-	TestTCP()
-	TestWebsocket()
+type Msg struct {
 }
 
-func TestTCP() {
+func (msg *Msg)TestTCP() {
 	conn, err := net.Dial("tcp", "127.0.0.1:3563")
+	log.Printf("connecting to tcp ")
 	if err != nil {
 		panic(err)
 	}
@@ -36,10 +35,9 @@ func TestTCP() {
 	conn.Write(m)
 }
 
-var addr = flag.String("addr", "127.0.0.1:3564", "http service address")
-
-func TestWebsocket() {
-	u := url.URL{Scheme: "ws", Host: *addr, Path: "/echo"}
+func (msg *Msg)TestWebsocket() {
+	var addr = flag.String("addr", "127.0.0.1:3564", "http service address")
+	u := url.URL{Scheme: "ws", Host: *addr, Path: ""}
 	log.Printf("connecting to %s", u.String())
 
 	c, _, err := websocket.DefaultDialer.Dial(u.String(), nil)
