@@ -30,7 +30,7 @@ func main(){
 
 	// InputCmd()
 
-	HeartBeat(client)
+	// HeartBeat(client)
 }
 
 func InputCmd() {

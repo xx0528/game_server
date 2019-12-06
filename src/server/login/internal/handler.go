@@ -34,6 +34,7 @@ func onLogin(args []interface{}) {
 	mgodb.Get(base.DBTask{m.Account, base.DBNAME, base.ACCOUNTSET, "account", m.Account, &base.AccountInfo{}, func(param interface{}, err error) {
 		info := param.(*base.AccountInfo)
 		if "" == info.Account {
+			log.Debug("没有账号 建立账号---")
 			info.Account = m.Account
 			info.Password = m.Password
 			info.ObjID = bson.NewObjectId().Hex()
@@ -41,14 +42,16 @@ func onLogin(args []interface{}) {
 		}
 
 		if info.Password != m.Password {
+			log.Debug("登录密码不正确")
 			a.WriteMsg(&msg.LoginRet{1, "", "login", nil})
 			return
 		}
 
 		a.SetUserData(info)
+		log.Debug("登录成功---")
 		skeleton.AsynCall(hall.ChanRPC, "OnLogin", a, func(err error) {
 			if nil != err {
-				log.Error("login failed: ", info.ObjID, " ", err.Error())
+				log.Error("login hall failed: ", info.ObjID, " ", err.Error())
 				a.WriteMsg(&msg.LoginRet{-1, "", "login", nil})
 				return
 			}

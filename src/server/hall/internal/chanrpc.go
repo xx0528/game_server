@@ -16,7 +16,7 @@ func init() {
 
 func rpcOnLogin(args []interface{}) {
 	a := args[0].(gate.Agent)
-	log.Debug("close agent")
+	log.Debug("进入大厅----")
 
 	userdata := a.UserData()
 	if nil == userdata {
@@ -26,11 +26,12 @@ func rpcOnLogin(args []interface{}) {
 	info := userdata.(*base.AccountInfo)
 	player := PlayerMgr.Get(info.ObjID)
 	if nil != player {
+		log.Debug("服务端已经存在此玩家")
 		player.agent.Close()
 		player.agent = a
 		return
 	}
-	
+	log.Debug("查找player信息---ObjID - ", info.ObjID)
 	mgodb.Get(base.DBTask{info.ObjID, base.DBNAME, base.PLAYERSET, "_id", base.BsonObjectID(info.ObjID), CreatePlayer(), func(param interface{}, err error) {		
 		player := param.(*Player)
 		player.objid = info.ObjID

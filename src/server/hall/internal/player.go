@@ -27,7 +27,8 @@ const (
 type Player struct {
 	objid   		string
 	agent   		gate.Agent
-	UID 			int64				
+	money			int64				
+	UID 			int64
 	Account 		string						
 	IntAttr 		[]int    //整型属性
 	StrAttr 		[]string //字符串属性
