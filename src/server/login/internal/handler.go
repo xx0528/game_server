@@ -47,6 +47,8 @@ func onLogin(args []interface{}) {
 			return
 		}
 
+		// a.WriteMsg(&msg.LoginRet{1, "aaaaaa", "login", nil})
+
 		a.SetUserData(info)
 		log.Debug("登录成功---")
 		skeleton.AsynCall(hall.ChanRPC, "OnLogin", a, func(err error) {
