@@ -13,6 +13,7 @@ var (
 func init() {
 	Processor.Register(&HeartBeat{})
 	Processor.Register(&LoginMsg{})
+	Processor.Register(&LoginRet{})
 	Processor.Register(&GameMsg{})
 	Processor.Register(&PlayerMsg{})
 }

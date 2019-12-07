@@ -22,7 +22,7 @@ func init() {
 
 func onHeartBeat(args []interface{}) {
 	a := args[1].(gate.Agent)
-	log.Debug("on recv heart beat ")
+	log.Debug("on recv heart beat ", a.UserData())
 	a.WriteMsg(&msg.HeartBeat{1})
 }
 
@@ -47,7 +47,7 @@ func onLogin(args []interface{}) {
 			return
 		}
 
-		// a.WriteMsg(&msg.LoginRet{1, "aaaaaa", "login", nil})
+		a.WriteMsg(&msg.LoginRet{1, "aaaaaa", "login", nil})
 
 		a.SetUserData(info)
 		log.Debug("登录成功---")

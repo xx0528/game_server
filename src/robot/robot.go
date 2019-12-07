@@ -1,16 +1,19 @@
 package main
 
 import (
-	"net/url"
 	"log"
-	"encoding/json"
-	"encoding/binary"
-	"errors"
+	// "time"
+	// "bytes"
+	// "math/rand"
+	// "strconv"
+	// "encoding/binary"
+	// "reflect"
+	// "unsafe"
+	// "encoding/json"
 	"robot/msg"
-	"reflect"
+	"robot/utils"
 
 	"gopkg.in/mgo.v2/bson"
-	"github.com/gorilla/websocket"
 )
 
 type Robot struct {
@@ -20,133 +23,53 @@ type Robot struct {
 	RoomID		int
 	NickName	string
 	Money		int64
-	conn		*websocket.Conn
-	msgInfo 	map[string]*MsgInfo
+	wsConn		*msg.WSConn
 }
-
-type MsgInfo struct {
-	msgType       reflect.Type
-	msgHandler    MsgHandler
-}
-
-type MsgHandler func([]interface{})
 
 func CreateRobot() *Robot {
 	robot := new(Robot)
 	return robot
 }
 
-func (robot *Robot) connect() {
-	u := url.URL{Scheme: "ws", Host: "127.0.0.1:3564", Path: ""}
-	log.Printf("connecting to %s", u.String())
-	var err error
-	robot.conn, _, err = websocket.DefaultDialer.Dial(u.String(), nil)
-	if err != nil {
-		log.Fatal("dial:", err)
-		return
-	}
-
-	done := make(chan struct{})
-	go func() {
-		defer close(done)
-		for {
-			log.Printf("recv --------- ")
-			_, message, err := robot.conn.ReadMessage()
-			if err != nil {
-				log.Println("read:---", err)
-				return
-			}
-			msg, err := robot.Unmarshal(message)
-
-			msgType := reflect.TypeOf(msg)
-			if msgType == nil || msgType.Kind() != reflect.Ptr {
-				log.Println("json message pointer required")
-				return
-			}
-			msgID := msgType.Elem().Name()
-			i, ok := robot.msgInfo[msgID]
-			if !ok {
-				log.Println("message not registered", msgID)
-			}
-			if i.msgHandler != nil {
-				i.msgHandler([]interface{}{msg})
-			}
-			// aa := message.(*msg.PlayerMsg)
-			log.Printf("recv:--- %s", msgID)
-
-		}
-	}()
-}
-
-// It's dangerous to call the method on routing or marshaling (unmarshaling)
-func (robot *Robot) Register(msg interface{}, msgHandler MsgHandler) string {
-	msgType := reflect.TypeOf(msg)
-	if msgType == nil || msgType.Kind() != reflect.Ptr {
-		log.Fatal("json message pointer required")
-	}
-	msgID := msgType.Elem().Name()
-	if msgID == "" {
-		log.Fatal("unnamed json message")
-	}
-	if _, ok := robot.msgInfo[msgID]; ok {
-		log.Fatal("message %v is already registered", msgID)
-	}
-
-	i := new(MsgInfo)
-	i.msgType = msgType
-	i.msgHandler = msgHandler
-	robot.msgInfo[msgID] = i
-
-	return msgID
-}
-
 func (robot *Robot) Init() {
 
-	robot.Register(&msg.PlayerMsg{}, robot.OnPlayerMsg)
+	robot.wsConn = msg.CreateConn()
+	robot.wsConn.Connect("127.0.0.1:3564")
+	robot.wsConn.Register(&msg.PlayerMsg{}, robot.OnPlayerMsg)
+	robot.wsConn.Register(&msg.LoginRet{}, robot.OnLogin)
+	robot.wsConn.Register(&msg.HeartBeat{}, robot.OnHeartBeat)
 
 	robot.objid = bson.NewObjectId().Hex()
-	robot.connect()
-	// robot.Run()
+	robot.NickName = utils.GetFullName()
+}
+
+func (robot *Robot) GetID() string {
+	return robot.objid
+}
+
+func (robot *Robot) GetName() string {
+	return robot.NickName
 }
 
 func (robot *Robot) OnPlayerMsg(args []interface{}) {
 	m := args[0].(*msg.PlayerMsg)
-	log.Printf("recv OnPlayerMsg msg --- ", m)
+	robot.Debug("recv OnPlayerMsg msg --- ", m.Cmd)
 }
 
-func (robot *Robot) Run() {
-	for {
-		_, data, err := robot.conn.ReadMessage()
-		if err != nil {
-			log.Printf("read message: %v", err)
-			break
-		}
-
-		msg, err := robot.Unmarshal(data)
-		if err != nil {
-			log.Printf("unmarshal message error: %v", err)
-			break
-		}
-		log.Printf("recv msg --- ", msg)
-	}
+func (robot *Robot) HeartBeat() {
+	// for {
+	// 	time.Sleep(time.Second*4)
+		data := []byte(`{
+			"HeartBeat": {
+				"PID": 1
+			}
+		}`)
+		robot.SendMsg(data)
+	// }
 }
-
-// goroutine safe
-func (robot *Robot) Unmarshal(data []byte) (interface{}, error) {
-	var m map[string]json.RawMessage
-	err := json.Unmarshal(data, &m)
-	if err != nil {
-		return nil, err
-	}
-	if len(m) != 1 {
-		return nil, errors.New("invalid json data")
-	}
-
-	for msgID, data := range m {
-		log.Printf("msgID : ", msgID, " data - ", data )
-	}
-
-	panic("bug")
+func (robot *Robot) OnHeartBeat(args []interface{}) {
+	m := args[0].(*msg.HeartBeat)
+	robot.Debug("recv OnHeartBeat msg --- ", m.PID)
 }
 
 func (robot *Robot) Login() {
@@ -160,19 +83,23 @@ func (robot *Robot) Login() {
 	robot.SendMsg(data)
 }
 
+func (robot *Robot) OnLogin(args []interface{}) {
+	m := args[0].(*msg.LoginRet)
+	robot.Debug("recv LoginRet msg --- ", m.Cmd)
+}
+
 func (robot *Robot) GetMoney() int64{
 	return robot.Money
 }
 
 func (robot *Robot) SendMsg(data []byte) {
-	m := make([]byte, 2+len(data))
-
-	binary.BigEndian.PutUint16(m, uint16(len(data)))
-
-	copy(m[2:], data)
-	robot.conn.WriteMessage(websocket.TextMessage, data)
+	robot.wsConn.WriteMsg(data)
 }
 
 func (robot *Robot) Logout() {
-	robot.conn.Close()
+	robot.wsConn.Close()
+}
+
+func (robot *Robot) Debug(format string, a ...interface{}) {
+	log.Printf(robot.GetName() + " : " + format, a... )
 }
