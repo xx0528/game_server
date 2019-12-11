@@ -24,3 +24,11 @@ func (seat *Seat)Init(room *Room) {
 	seat.room = room
 	seat.roomID = room.GetID()
 }
+
+func (seat *Seat) GetID() int64 {
+	return seat.ID
+}
+
+func (seat *Seat) SetState(state int) {
+	seat.state = state
+}

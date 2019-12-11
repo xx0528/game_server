@@ -2,7 +2,6 @@ package internal
 
 import (
 	"math/rand"
-	hInternal "server/hall/internal"
 )
 
 const (
@@ -11,7 +10,9 @@ const (
 	ROOM_STATE_DELETE	= 2//删除状态
 	ROOM_STATE_UNINIT	= 3//未初始化	
 )
-
+var(
+	S_ID = 1
+)
 type Room struct {
 	ID				int64
 	stateID			int
@@ -28,7 +29,8 @@ type Room struct {
 func (room *Room) Init() {
 	rand.Seed(time.Now().UnixNano())
 
-	room.ID = hInternal.GenerateUID()
+	room.ID = S_ID
+	S_ID = S_ID + 1
 	round = 1
 	baseScore = 0
 	topScore = 0
@@ -37,4 +39,24 @@ func (room *Room) Init() {
 
 func (room *Room) GetID() int64 {
 	return room.ID
+}
+
+func (room *Room) GetSeat(seatID string) *Seat {
+	return room.seatList[seatID]
+}
+
+func (room *Room) AddSeat(seatID string, seat *Seat) {
+	room.seatList[seatID] = seat
+}
+
+func (room *Room) GetPlayer(playerID string) *Player {
+	return room.playerList[playerID]
+}
+
+func (room *Room) AddPlayer(playerID string, player *Player) {
+	room.playerList[playerID] = player
+}
+
+func (room *Room) Quit() {
+	
 }

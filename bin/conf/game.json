@@ -1,0 +1,90 @@
+[
+    {
+        "gameID": 1,
+        "name": "斗地主",
+        "rooms": [
+            {
+                "configID": 1001,
+                "baseScore": 10,
+                "topScore": 10000,
+                "tax": 10,
+                "enterMoney": 300,
+                "desc": "斗地主1分场"
+            },
+            {
+                "configID": 1001,
+                "baseScore": 10,
+                "topScore": 10000,
+                "tax": 10,
+                "enterMoney": 300,
+                "desc": "斗地主10分场"
+            }
+        ]
+    },
+    {
+        "gameID": 2,
+        "name": "炸金花",
+        "rooms": [
+            {
+                "configID": 1002,
+                "baseScore": 10,
+                "topScore": 10000,
+                "tax": 10,
+                "enterMoney": 300,
+                "desc": "炸金花1分场"
+            },
+            {
+                "configID": 1002,
+                "baseScore": 10,
+                "topScore": 10000,
+                "tax": 10,
+                "enterMoney": 300,
+                "desc": "炸金花1分场"
+            }
+        ]
+    },
+    {
+        "gameID": 3,
+        "name": "捕鱼",
+        "rooms": [
+            {
+                "configID": 1003,
+                "baseScore": 10,
+                "topScore": 10000,
+                "tax": 10,
+                "enterMoney": 300,
+                "desc": "捕鱼1分场"
+            },
+            {
+                "configID": 1003,
+                "baseScore": 10,
+                "topScore": 10000,
+                "tax": 10,
+                "enterMoney": 300,
+                "desc": "捕鱼1分场"
+            }
+        ]
+    },
+    {
+        "gameID": 4,
+        "name": "德州扑克",
+        "rooms": [
+            {
+                "configID": 1002,
+                "baseScore": 10,
+                "topScore": 10000,
+                "tax": 10,
+                "enterMoney": 300,
+                "desc": "德州扑克1分场"
+            },
+            {
+                "configID": 1003,
+                "baseScore": 10,
+                "topScore": 10000,
+                "tax": 10,
+                "enterMoney": 300,
+                "desc": "德州扑克1分场"
+            }
+        ]
+    }
+]

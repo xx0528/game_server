@@ -8,6 +8,7 @@ import (
 var (
 	skeleton = base.NewSkeleton()
 	ChanRPC  = skeleton.ChanRPCServer
+	gameMgr	 = NewGameMgr()
 )
 
 type Module struct {
@@ -16,6 +17,8 @@ type Module struct {
 
 func (m *Module) OnInit() {
 	m.Skeleton = skeleton
+
+	m.gameMgr.Init()
 }
 
 func (m *Module) OnDestroy() {
